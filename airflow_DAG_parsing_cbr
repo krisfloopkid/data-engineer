@@ -31,14 +31,12 @@ xml_path = '/tmp/k_molodozhenova_cbr.xml'
 csv_path = '/tmp/k_molodozhenova_cbr.csv'
 
 
-
 with DAG("k-molodozhenova_parsing_cbr",
           schedule_interval='0 0 * * MON-SAT',
           default_args=DEFAULT_ARGS,
           max_active_runs=1,
           tags=['km']
 ) as dag:
-
 
     extract_cbr_xml = BashOperator(
     task_id='extract_cbr_xml',
