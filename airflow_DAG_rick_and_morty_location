@@ -1,0 +1,81 @@
+"""
+    Создает в Greenplum таблицу
+    С помощью API получает топ-3 локации сериала "Рик и Морти" с наибольшим количеством резидентов
+    Записывает значения трёх локаций в таблицу
+"""
+
+from airflow import DAG
+import logging
+from datetime import datetime
+from airflow.utils.dates import days_ago
+from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.bash import BashOperator
+from airflow.operators.python_operator import PythonOperator
+from airflow.operators.postgres_operator import PostgresOperator
+from airflow.operators.python import BranchPythonOperator
+from airflow.providers.postgres.hooks.postgres import PostgresHook
+from k_molodozhenova_plugins.k_molodozhenova_ram_location_operator import KMRaMLocationOperator
+
+DEFAULT_ARGS = {
+    'owner': 'k-molodozhenova',
+    'start_date': days_ago(1),
+    'poke_interval': 60,
+    'retries' : 1,
+    'depends_on_past': True
+}
+
+table_gp = 'k_molodozhenova_ram_location'
+csv_path = '/tmp/top_location.csv'
+sql = f"""
+    DROP TABLE IF EXISTS {table_gp};
+    
+    CREATE TABLE IF NOT EXISTS {table_gp} (
+        id            SMALLINT PRIMARY KEY,
+        name          VARCHAR(50),
+        type          VARCHAR(50),
+        dimension     VARCHAR(50),
+        resident_cnt  SMALLINT                   
+    )
+    DISTRIBUTED BY (id);
+    """
+
+with DAG(
+        dag_id='k-molodozhenova_ram_location',
+        schedule_interval=None,
+        default_args=DEFAULT_ARGS,
+        tags=['km']
+) as dag:
+
+    get_top_location = KMRaMLocationOperator(
+        task_id='get_top_location',
+        top_location=3,
+        csv_path=csv_path
+    )
+
+# =================================================================================
+
+    create_table = PostgresOperator(
+        task_id='create_table',
+        postgres_conn_id='conn_greenplum_write',
+        sql=sql
+    )
+
+# =================================================================================
+    def load_data_to_gp_func():
+        pg_hook = PostgresHook('conn_greenplum_write')
+        pg_hook.copy_expert(f"COPY {table_gp} FROM STDIN DELIMITER ','", csv_path)
+
+
+    load_data_to_gp = PythonOperator(
+        task_id='load_data_to_gp',
+        python_callable=load_data_to_gp_func
+    )
+
+ # =================================================================================
+
+    del_tmp_files = BashOperator(
+        task_id='del_tmp_files',
+        bash_command=f'rm {csv_path}'
+    )
+
+get_top_location >> create_table >> load_data_to_gp >> del_tmp_files
