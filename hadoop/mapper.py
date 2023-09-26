@@ -15,7 +15,7 @@ def perform_map():
 
             if pickup_datetime.year == 2020 and payment_type and tip_amount >= 0:
                 month = pickup_datetime.strftime('%Y-%m')
-                print('{0},{1}]\t{2}'.format(month, payment_type, tip_amount))
+                print('{0},{1}\t{2}'.format(payment_type, month, tip_amount))
 
 
 if __name__ == '__main__':
