@@ -33,7 +33,7 @@
 ## Сбор данных
 * забираем данные с HDFS:
 ```shell
- hadoop fs -cat /user/root/output-data/part-0000* | sort -t, -k2,2 -k1,1 > result.csv
+ hadoop fs -cat /user/root/output-data/part-0000* > result.csv
   ```
 * переносим данные в s3 бакет:
 ```shell
