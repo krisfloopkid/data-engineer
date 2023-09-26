@@ -3,6 +3,7 @@
 
 import sys
 
+
 mp = {'1': 'Credit card',
       '2': 'Cash',
       '3': 'No charge',
@@ -23,7 +24,7 @@ def perform_reduce():
             if current_key:
                 avg_tip = total_tips / count
                 payment_type, month = current_key.split(',')
-                print('{0},{1},{2}'.format(month, mp[payment_type], avg_tip))
+                print('{1},{0},{2:.2f}'.format(mp[payment_type], month, avg_tip))
             current_key = key
 
             total_tips = 0
@@ -35,7 +36,7 @@ def perform_reduce():
     if current_key:
         avg_tip = total_tips / count
         payment_type, month = current_key.split(',')
-        print('{0},{1},{2}'.format(month, mp[payment_type], avg_tip))
+        print('{1},{0},{2:.2f}'.format(mp[payment_type], month, avg_tip))
 
 
 if __name__ == '__main__':
