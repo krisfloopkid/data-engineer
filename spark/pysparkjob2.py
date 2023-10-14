@@ -4,14 +4,13 @@ from pyspark.sql import functions as f
 
 
 def process(spark, flights_path, result_path):
-    """
+     """
     Основной процесс задачи.
 
     :param spark: SparkSession
     :param flights_path: путь до датасета c рейсами
     :param result_path: путь с результатами преобразований
     """
-  
     df_flights = spark.read.parquet(flights_path) \
         .groupBy(f.col('ORIGIN_AIRPORT'), f.col('DESTINATION_AIRPORT')) \
         .agg(f.count(f.col('TAIL_NUMBER')).alias('tail_count'),
