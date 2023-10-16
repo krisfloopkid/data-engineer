@@ -1,7 +1,7 @@
 ### Обзор
 
-На практике использовался набор данных о рейсах ([Задержки и отмены рейсов за 2015 год](https://www.kaggle.com/datasets/usdot/flight-delays)).
-Работа велась на подготовленных _parquet_ файлах с данными об _airlines_, _airports_ и _flights_.
+На практике использовался набор данных [Задержки и отмены рейсов за 2015 год](https://www.kaggle.com/datasets/usdot/flight-delays).
+ Работа велась на подготовленных _parquet_ файлах с данными об _airlines_, _airports_ и _flights_.
 
 ---
 
