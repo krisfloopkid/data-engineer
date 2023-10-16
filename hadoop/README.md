@@ -1,7 +1,7 @@
 ### Обзор
 
-На практике были использованы ([Данные о поездках Нью-Йоркского такси за 2020 год](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page))
-Описание формата данных — ([Словарь данных](https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf))
+На практике использовался набор данных [Нью-Йоркского такси за 2020 год](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page).
+> [Описание формата данных](https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf).
 
 ---
 
