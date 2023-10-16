@@ -1,42 +1,41 @@
-# Практика MapReduce
+### Обзор
 
-## Подготовка
+На практике были использованы ([Данные о поездках Нью-Йоркского такси за 2020 год](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page))
+Описание формата данных — ([Словарь данных](https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf))
 
-* создадим кластер 
-* установим AWS CLI на одной из машин кластера:
-  ```shell
-  apt install -y awscli
-  ```
-* скачаем тестовые данные:
-  ```shell
-  aws --profile=karpov-user --endpoint-url=https://storage.yandexcloud.net
-  s3 cp --recursive s3://ny-taxi-data/ny-taxi/ ./2020
-  ```
-* переложим их на HDFS:
-  ```shell
-  hadoop fs -mkdir /user/root/2020
-  hadoop fs -put /root/2020 2020
-  ```  
-## Создаем код mapper и reducer
-## Запустим код
-* Скопируем код на кластер:
-  ```shell
-  scp ./*.py root@<Публичный IP>:/tmp/mapreduce/
-  scp ./run.sh root@<Публичный IP>:/tmp/mapreduce/
-  ```
-* Запустим код:
-  ```shell
-  cd /tmp/mapreduce/
-  chmod +x ./run.sh
-  ./run.sh 
-  ```
-## Сбор данных
-* забираем данные с HDFS:
-```shell
- hadoop fs -cat /user/root/output-data/part-00000 | sort -t, -k1,1 -k2,2 > result.csv
-  ```
-* переносим данные в s3 бакет:
-```shell
- aws --endpoint-url=https://storage.yandexcloud.net/
- s3 cp ./result.csv s3://<Имя бакета>/
-  ```
+---
+
+#### Подготовка
+
+- Создать S3 бакет в Object Storage (документация)
+- Скопировать данные желтого такси за 2020 год в созданный s3 бакет.
+
+
+#### Задача
+
+Написать map-reduce приложение, использующее скопированные на Object storage данные и вычисляющее отчет на каждый месяц 2020 года вида:
+
+| Payment type | Month   | Tips average amount |
+|--------------|---------|---------------------|
+| Cash         | 2020-01 | 999.99              |
+
+##### Требования к отчету
+
+- Количество файлов — 1
+- Формат — csv
+- Сортировка — не требуется
+- Month считаем по полю tpep_pickup_datetime
+- Payment type считаем по полю payment_type
+- Tips average amount вычисляем по полю tip_amount
+- В датасете будут присутствовать неверные данные, которые нужно будет отсеять
+- Маппинг типов оплат:
+```python
+mapping = {
+        1: 'Credit card',
+        2: 'Cash',
+        3: 'No charge',
+        4: 'Dispute',
+        5: 'Unknown',
+        6: 'Voided trip'
+    }
+```
