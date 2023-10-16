@@ -1,6 +1,6 @@
 ### Обзор
 
-Создание ETL процесса с использованием AirFlow через API [Rick and Morty API](https://rickandmortyapi.com/documentation/#location) для
+Создание ETL процесса с использованием AirFlow через [API Rick and Morty](https://rickandmortyapi.com/documentation/#location) для
 нахождения трех локаций сериала с наибольшим количеством жителей.
 
 ---
@@ -9,7 +9,7 @@
 
 1. Создать таблицу в GreenPlum с полями `id`, `name`, `type`, `dimension`, `resident_cnt`.
 
-2. С помощью API [Rick and Morty API](https://rickandmortyapi.com/documentation/#location) найти три локации
+2. С помощью [API Rick and Morty](https://rickandmortyapi.com/documentation/#location) найти три локации
    сериала "Рик и Морти" с наибольшим количеством резидентов.
 
 3. Записать значения соответствующих полей этих трех мест в таблицу.
